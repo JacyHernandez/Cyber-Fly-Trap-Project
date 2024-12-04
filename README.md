@@ -110,14 +110,43 @@
 - Launch **PowerShell ISE** in the VM.
 - Copy the PowerShell script from [Josh Madakor’s GitHub](https://github.com/joshmadakor1/Sentinel-Lab/blob/main/Custom_Security_Log_Exporter.ps1) and paste it into PowerShell ISE.
 - Save and run the script to export logs continually.
+- 
+<img width="468" alt="Picture13" src="https://github.com/user-attachments/assets/f48d71e6-2d43-453d-83c4-8bbd6ffe1102">
+
+- 
+- create a profile on https://ipgeolocation.io/
+- 
+- <img width="468" alt="Picture12" src="https://github.com/user-attachments/assets/cda09a37-7d28-4bdb-8ee1-9fc566f8246b">
+
+- Once logged in, copy the API key and paste it into line 2 of the script. $API_KEY = "<API key>"
+- Click Save
+
 
 ## 9. Creating a Custom Log in Log Analytics Workspace
-- Go to `C:\ProgramData` and copy the `failed_rdp.log` file.
-- In Azure, navigate to **Log Analytics Workspaces** > `honeypot-law` > **Custom logs** > **Add custom log**.
+- Go to `C:\ProgramData` on file explorer in your VM and copy the `failed_rdp.log` file.
+
+- <img width="391" alt="Picture14" src="https://github.com/user-attachments/assets/99af9f58-c0df-4419-9240-b20a1740971a">
+
+- Save to your desktop as “failed_rdp.log” Note: make sure it’s saved as a (.txt) text file.
+- In Azure, navigate to **Log Analytics Workspaces** > `honeypot-law` > **Custom logs** > **Add custom log MMA-Based**.
 - Configure and click **Create**.
 
+- <img width="468" alt="Picture15" src="https://github.com/user-attachments/assets/15f7aa8d-77f9-4054-bb8f-d216ba00cce8">
+
+## Sample:
+- Select Sample log saved to Desktop (failed_rdp.log) and click Next
+
+- <img width="468" alt="Picture16" src="https://github.com/user-attachments/assets/ebf68a90-f9eb-4403-95f9-3371b9569e8e">
+
+- **Record delimiter**: Look over sample logs -> Click Next
+- **Collection Paths**: Type: Windows, Path: C:\ProgramData\failed_rdp.log
+- **Details**: Name and describe the custom log (failed_rdp_with_geo) before pressing the **Next** button, Click Create
+
+- <img width="468" alt="Picture17" src="https://github.com/user-attachments/assets/54070c0e-44b3-46c4-ae8a-f31c354b108c">
+
+
 ## 10. Querying and Extracting Fields from Custom Logs
-- Run a query in **Log Analytics** to filter and extract data:
+- Run a query in **Log Analytics** to filter and extract data, Navigate to (honeypot-law) in Log Analytics Workspaces -> Logs:
 ```kusto
 failed_rdp_with_geo_CL 
 | extend username = extract(@"username:([^,]+)", 1, RawData),
@@ -132,7 +161,64 @@ failed_rdp_with_geo_CL
 | where destination != "samplehost"
 | where sourcehost != ""
 | summarize event_count=count() by timestamp, label, country, state, sourcehost, username, destination, longitude, latitude
+```
+## 11. Create world attack map in Microsoft Sentinel.
+- Access Microsoft Sentinel
+- Click on Workbooks and +Add workbook then click Edit
 
- 
+<img width="468" alt="Picture19" src="https://github.com/user-attachments/assets/548a5853-ac3d-42bc-9260-d63d74a5c1c6">
 
+- Delete default widgets (three dots -> remove)
+- Click Add->Add query
 
+- <img width="499" alt="Picture20" src="https://github.com/user-attachments/assets/c6bb8dc8-4046-4cd7-b7fa-bddf9b9e4874">
+
+- You can Copy/Paste the previous query or this one into the query window and Run Query:
+```kusto
+failed_rdp_with_geo_CL 
+| extend username = extract(@"username:([^,]+)", 1, RawData),
+         timestamp = extract(@"timestamp:([^,]+)", 1, RawData),
+         latitude = extract(@"latitude:([^,]+)", 1, RawData),
+         longitude = extract(@"longitude:([^,]+)", 1, RawData),
+         sourcehost = extract(@"sourcehost:([^,]+)", 1, RawData),
+         state = extract(@"state:([^,]+)", 1, RawData),
+         label = extract(@"label:([^,]+)", 1, RawData),
+         destination = extract(@"destinationhost:([^,]+)", 1, RawData),
+         country = extract(@"country:([^,]+)", 1, RawData)
+| where destination != "samplehost"
+| where sourcehost != ""
+| summarize event_count=count() by timestamp, label, country, state, sourcehost, username, destination, longitude, latitude
+```
+- When results appear, select Map from the Visualization drop-down box
+- Choose Map Settings to make additional adjustments
+## Layout Settings:
+- **Location info using**: Latitude/Longitude
+- **Latitude**: latitude
+- **Longitude**: longitude
+- **Size by**: Event count
+
+## Color Settings:
+- **Coloring Type**: Heatmap
+- **Color by**: event_count
+- **Aggregationn for color**: Sum of Values
+- **Color Palette**: Green to Red
+
+## Metric Settings:
+- **Metric label**: Label
+- **Metric Value**: event_count
+- Click Apply button and Save and Close
+
+- ![image](https://github.com/user-attachments/assets/655cc978-323d-4cb5-bf27-f74df9b0d098)
+
+- Save as “Failed RDP International Map” in the same region and under the resource group (honeypot-lab)
+- Keep refreshing the map to show more inbound failed RDP attacks. Attacks can take a while to be seen.
+
+<img width="515" alt="Picture21" src="https://github.com/user-attachments/assets/22e7d81b-b417-48fe-b98e-fb10bf678693">
+
+## 12. Shut down resources
+- Look for "Resource groups" -> name of resource group
+- Type in the name of the resource group (honeypot-project) to verify the resource was removed
+- Select the Apply force delete for selected Virtual machines and Virtual machine scale sets box
+- Click Delete
+
+- <img width="468" alt="Picture22" src="https://github.com/user-attachments/assets/3521d466-3098-47e3-a79a-6c3d5c120d6a">
