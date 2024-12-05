@@ -1,17 +1,40 @@
-# Cyber-Fly-Trap-Project
+# Cyber Fly Trap Project: Honeypot on Azure
+
+## What is a Honeypot 🍯?
+
+A honeypot is a cybersecurity tool designed to act as bait for attackers. Imagine it as a digital trap 🪤 — a fake system or network intentionally set up to look vulnerable or valuable. Its purpose is to attract cybercriminals, tricking them into interacting with it instead of real systems.
+
+## Why is it Important?
+
+- **Learning from Attackers:** A honeypot lets you observe 🔭 hackers in action. You can see their tactics, tools, and techniques in a safe environment.  
+- **Early Threat Detection:** By monitoring unusual activity in the honeypot, you can spot attacks before they hit actual systems.  
+- **Building Skills:** For cybersecurity professionals, working with a honeypot is like practicing on a simulated battlefield ⚔️. It sharpens your ability to understand threats and respond effectively.  
+
+## Learning Objectives
+
+This project aims to achieve the following:
+
+1. **Master the configuration and deployment of Azure resources**, including Virtual Machines, Log Analytics Workspaces, and Azure Sentinel.  
+2. Gain **hands-on experience** and develop a solid working knowledge of **Microsoft Azure Sentinel** as a powerful SIEM and log management tool.  
+3. Understand the fundamentals of **Windows Security Event Logs** and their role in threat detection.  
+4. Learn to utilize **KQL (Kusto Query Language)** to efficiently query and analyze log data.  
+5. Visualize attack data through interactive dashboards using **Workbooks**, including dynamic world map displays of threats.  
+
+---
+
+## Let’s Get Started
 
 # Setting Up a Honeypot on Azure: Step-by-Step Guide
 
 ## 1. Create an Azure Account
 - **Sign up for a free Microsoft Azure account** using [this link](https://azure.microsoft.com/en-us/pricing/purchase-options/azure-account?icid=azurefreeaccount).
-- 
+
 <img width="468" alt="Picture1" src="https://github.com/user-attachments/assets/c4d2e7c7-3421-4af7-884e-39dac01895ca">
 
 ## 2. Setting Up Your Honeypot Virtual Machine
 - **Sign in** to the [Azure Portal](https://portal.azure.com).
 - Search for **"Virtual Machine"** and click on **"Create"** > **"Azure Virtual Machine"**.
 
-- 
 <img width="379" alt="Picture2" src="https://github.com/user-attachments/assets/78ac7aff-6b53-4d3f-8d77-96d39569f5ab">
 
 ### Project Details:
@@ -24,7 +47,6 @@
 - **VM Architecture**: x64.
 - **Size**: `Standard_DS1_v2` (1 vcpu, 3.5 GiB memory).
 
-- 
 <img width="468" alt="Picture3" src="https://github.com/user-attachments/assets/f098a866-3e55-4c6b-b89a-01c37a858f4a">
 
 ### Administrator Account:
@@ -36,7 +58,7 @@
 ### Licensing:
 - Confirm the checkbox and proceed to **Next: Disks**.
 - Select Next: **Networking**
-- 
+
 <img width="468" alt="Picture4" src="https://github.com/user-attachments/assets/3dab94e5-4c15-4ea1-86b7-0be00070bc18">
 
 ### Networking:
@@ -110,12 +132,11 @@
 - Launch **PowerShell ISE** in the VM.
 - Copy the PowerShell script from [Josh Madakor’s GitHub](https://github.com/joshmadakor1/Sentinel-Lab/blob/main/Custom_Security_Log_Exporter.ps1) and paste it into PowerShell ISE.
 - Save and run the script to export logs continually.
-- 
+
 <img width="468" alt="Picture13" src="https://github.com/user-attachments/assets/f48d71e6-2d43-453d-83c4-8bbd6ffe1102">
 
-- 
 - create a profile on https://ipgeolocation.io/
-- 
+
 - <img width="468" alt="Picture12" src="https://github.com/user-attachments/assets/cda09a37-7d28-4bdb-8ee1-9fc566f8246b">
 
 - Once logged in, copy the API key and paste it into line 2 of the script. $API_KEY = "<API key>"
