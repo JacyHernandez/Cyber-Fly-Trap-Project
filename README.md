@@ -1,4 +1,4 @@
-# Cyber Fly Trap Project: Honeypot on Azure
+# The Cyber Fly Trap: Honeypot on Azure Project
 
 ## What is a Honeypot 🍯?
 
